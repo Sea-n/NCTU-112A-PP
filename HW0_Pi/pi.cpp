@@ -1,25 +1,24 @@
-#include <iostream>
+#include <cstdio>
 #include <random>
 
-using namespace std;
-
 int main() {
-	int number_in_circle = 0;
-	int number_of_tosses = 100;
-	double x, y, distance_squared;
+	int cnt = 0;
+	const int N = 50000000;
+	double x, y, r2, pi;
 
-	uniform_real_distribution<double> unif(-1, 1);
-	default_random_engine re;
+	srand(time(0));
+	std::uniform_real_distribution<double> unif(0, 1);
+	std::default_random_engine re;
 
-	for (int toss = 0; toss < number_of_tosses; toss++) {
+	for (int toss = 0; toss < N; toss++) {
 		x = unif(re);
 		y = unif(re);
-		distance_squared = x * x + y * y;
-		if (distance_squared <= 1)
-			number_in_circle++;
+		r2 = x * x + y * y;
+		if (r2 <= 1)
+			cnt++;
 	}
-	double pi_estimate = 4 * number_in_circle / ((double) number_of_tosses);
+	pi = 4 * cnt / ((double) N);
 
-	cout << pi_estimate;
+	printf("%lf\n", pi);
 	return 0;
 }
