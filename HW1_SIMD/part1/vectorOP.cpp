@@ -1,4 +1,5 @@
 #include "PPintrin.h"
+/* Author: Sean Wei <https://sean.cat/> */
 
 // implementation of absSerial(), but it is vectorized using PP intrinsics
 void absVector(float *values, float *output, int N)
