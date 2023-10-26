@@ -39,6 +39,8 @@ void absVector(float *values, float *output, int N)
     // Write results back to memory
     _pp_vstore_float(output + i, result, maskAll);
   }
+
+  _pp_vstore_float(output + N, zero, maskAll);
 }
 
 void clampedExpVector(float *values, int *exponents, float *output, int N)
@@ -51,33 +53,33 @@ void clampedExpVector(float *values, int *exponents, float *output, int N)
   // N and VECTOR_WIDTH, not just when VECTOR_WIDTH divides N
   //
 
-  __pp_vec_float res, valF, maxF, allZeroF;
-  __pp_vec_int allOneI, allZeroI, expV;
+  __pp_vec_float resF, valF, maxF, zeroF;
+  __pp_vec_int zeroI, oneI, expI;
   __pp_mask maskAll, maskExp, maskMax;
 
   maskAll = _pp_init_ones();  // maskAll = [* * * *]
-  _pp_vset_int(allOneI, 1, maskAll);   // allOneI = [1 1 1 1]
-  _pp_vset_int(allZeroI, 0, maskAll);  // allZeroI = [0 0 0 0]
-  _pp_vset_float(allZeroF, 0, maskAll);  // allZeroF = [.0 .0]
+  _pp_vset_int(oneI, 1, maskAll);   // oneI  = [1 1 1 1]
+  _pp_vset_int(zeroI, 0, maskAll);  // zeroI = [0 0 0 0]
+  _pp_vset_float(zeroF, 0.0f, maskAll);  // zeroF = [0.0f 0.0f]
   _pp_vset_float(maxF, 9.999999f, maskAll);
 
   for (int i = 0; i < N; i += VECTOR_WIDTH) {
-    _pp_vload_int(expV, exponents + i, maskAll);  // expV = exponents
+    _pp_vload_int(expI, exponents + i, maskAll);  // expI = exponents
     _pp_vload_float(valF, values + i, maskAll);   // valF = values
-    _pp_vset_float(res, 1.0, maskAll);  // res = 1.0
+    _pp_vset_float(resF, 1.0, maskAll);           // resF = 1.0
 
     do {
-      _pp_vgt_int(maskExp, expV, allZeroI, maskAll);  // maskExp = (expV > 0)
-      _pp_vsub_int(expV, expV, allOneI, maskExp);  // expV -= 1
-      _pp_vmult_float(res, res, valF, maskExp);  // if (maskExp) { res *= valF }
+      _pp_vgt_int(maskExp, expI, zeroI, maskAll);  // if (expI > 0)
+      _pp_vsub_int(expI, expI, oneI, maskExp);     //   expI -= 1
+      _pp_vmult_float(resF, resF, valF, maskExp);  //   resF *= valF
     } while (_pp_cntbits(maskExp));
 
-    _pp_vgt_float(maskMax, res, maxF, maskAll);  // maskMax = (res > 9.99)
-    _pp_vmove_float(res, maxF, maskMax);
-    _pp_vstore_float(output + i, res, maskAll);
+    _pp_vgt_float(maskMax, resF, maxF, maskAll);  // if (resF > 9.99)
+    _pp_vmove_float(resF, maxF, maskMax);         //   resF := maxF
+    _pp_vstore_float(output + i, resF, maskAll);  // output[i] = resF
   }
 
-    _pp_vstore_float(output + N, allZeroF, maskAll);
+  _pp_vstore_float(output + N, zeroF, maskAll);
 }
 
 // returns the sum of all elements in values
@@ -98,7 +100,7 @@ float arraySumVector(float *values, int N)
 
   for (int i = 0; i < N; i += VECTOR_WIDTH) {
     _pp_vload_float(valF, values + i, maskAll);  // valF = values
-    _pp_vadd_float(sumF, sumF, valF, maskAll);
+    _pp_vadd_float(sumF, sumF, valF, maskAll);   // sumF += valF
   }
 
   float sum[VECTOR_WIDTH];
