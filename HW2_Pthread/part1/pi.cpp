@@ -1,11 +1,12 @@
 #include <pthread.h>
+#include <cassert>
 #include <cstdio>
 #include <random>
 
 constexpr double m2 = (double) RAND_MAX * RAND_MAX;
 
 typedef struct  {
-	int tid, begin, end;
+	int tid, num;
 	long long *sum;
 } Job;
 
@@ -29,6 +30,7 @@ int main(int argc, char **argv) {
 	*sum = 0;
 
 	/* Command line arguments */
+	assert(argc == 3 && "Usage: $0 thread-count n-round");
 	T = strtol(argv[1], nullptr, 10);
 	N = strtoll(argv[2], nullptr, 10);
 
@@ -36,8 +38,7 @@ int main(int argc, char **argv) {
 	Job jobs[T];
 	for (int k=0; k<T; k++) {
 		jobs[k].tid = k;
-		jobs[k].begin = N * k / T;
-		jobs[k].end = N * (k+1) / T;
+		jobs[k].num = N*(k+1)/T - N*k/T;
 		jobs[k].sum = sum;  // shared pointer
 		pthread_create(&thrd[k], &pattr, worker, (void *) &jobs[k]);
 	}
@@ -52,18 +53,19 @@ int main(int argc, char **argv) {
 	pi = 4.0 * (*sum) / N;
 	printf("%lf\n", pi);
 
+	free(sum);
 	pthread_exit(NULL);
 	return 0;
 }
 
 void *worker(void *arg) {
 	Job *job = (Job *) arg;
-	double x, y, r2, pi;
+	double x, y, r2;
 	long long cnt = 0;
 	unsigned int seed1 = job->tid * 2;
 	unsigned int seed2 = seed1 + 1;
 
-	for (int toss = job->begin; toss < job->end; toss++) {
+	for (int toss = job->num; toss > 0; toss--) {
 		x = rand_r(&seed1);
 		y = rand_r(&seed2);
 		r2 = x * x + y * y;
