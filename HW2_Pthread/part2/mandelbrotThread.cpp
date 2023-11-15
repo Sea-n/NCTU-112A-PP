@@ -32,6 +32,7 @@ void workerThreadStart(WorkerArgs *const args) {
 	const float dy = (args->y1 - args->y0) / args->height;
 
 	for (int j = args->threadId; j < args->height; j += args->numThreads) {
+	// for (int j = args->height * args->threadId / args->numThreads; j < args->height * (args->threadId+1) / args->numThreads; j++) {
 		const float y = args->y0 + j * dy;
 		for (int i = 0; i < (int) args->width; ++i) {
 			const float x = args->x0 + i * dx;
