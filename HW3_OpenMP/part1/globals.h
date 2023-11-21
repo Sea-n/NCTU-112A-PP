@@ -11,7 +11,7 @@
 #endif
 
 //midiumn datasize
-#ifdef MEDIUMN
+#ifdef MEDIUM
 #define NA        14000
 #define NONZER    11
 #define SHIFT     20

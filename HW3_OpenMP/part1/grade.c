@@ -15,8 +15,7 @@ void reference_iterate(double *zeta, int *it);
 void default_init(double *zeta);
 void default_iterate(double *zeta, int *it);
 
-void print_scores(double stu_time, double ref_time, logical verified)
-{
+void print_scores(double stu_time, double ref_time, logical verified) {
     double max_score = 30;
     double max_perf_score = 0.8 * max_score;
     double correctness_score = 0.2 * max_score;
@@ -39,8 +38,7 @@ void print_scores(double stu_time, double ref_time, logical verified)
     return;
 }
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     int num_threads = omp_get_max_threads();
     int i, j, k, it;
     double zeta;
@@ -58,19 +56,17 @@ int main(int argc, char *argv[])
     printf(" Running with %d threads\n", num_threads);
     printf("\n");
 
-    for (i = 0; i < T_last; i++)
-    {
+    /* Student */
+    for (i = 0; i < T_last; i++) {
         timer_clear(i);
     }
     timer_start(T_init);
     init(&zeta);
     zeta = 0.0;
-    for (it = 1; it <= 1; it++)
-    {
+    for (it = 1; it <= 1; it++) {
         iterate(&zeta, &it);
     }
-    for (i = 0; i < NA + 1; i++)
-    {
+    for (i = 0; i < NA + 1; i++) {
         x[i] = 1.0;
     }
     zeta = 0.0;
@@ -78,44 +74,40 @@ int main(int argc, char *argv[])
     t_total += timer_read(T_init);
 
     timer_start(T_bench);
-    for (it = 1; it <= NITER; it++)
-    {
+    for (it = 1; it <= NITER; it++) {
         iterate(&zeta, &it);
     }
     timer_stop(T_bench);
     t = timer_read(T_bench);
     t_total += t;
 
+    /* Verify */
     epsilon = 1.0e-10;
     err = fabs(zeta - zeta_verify_value) / zeta_verify_value;
-    if (err <= epsilon)
-    {
+    if (err <= epsilon) {
         verified = true;
         printf(" VERIFICATION SUCCESSFUL\n");
         printf(" Zeta is    %20.13E\n", zeta);
         printf(" Error is   %20.13E\n", err);
     }
-    else
-    {
+    else {
         verified = false;
         printf(" VERIFICATION FAILED\n");
         printf(" Zeta                %20.13E\n", zeta);
         printf(" The correct zeta is %20.13E\n", zeta_verify_value);
     }
 
-    for (i = 0; i < T_last; i++)
-    {
+    /* Reference */
+    for (i = 0; i < T_last; i++) {
         timer_clear(i);
     }
     timer_start(T_init);
     reference_init(&zeta);
     zeta = 0.0;
-    for (it = 1; it <= 1; it++)
-    {
+    for (it = 1; it <= 1; it++) {
         reference_iterate(&zeta, &it);
     }
-    for (i = 0; i < NA + 1; i++)
-    {
+    for (i = 0; i < NA + 1; i++) {
         x[i] = 1.0;
     }
     zeta = 0.0;
@@ -123,27 +115,24 @@ int main(int argc, char *argv[])
     reference_total += timer_read(T_init);
 
     timer_start(T_bench);
-    for (it = 1; it <= NITER; it++)
-    {
+    for (it = 1; it <= NITER; it++) {
         reference_iterate(&zeta, &it);
     }
     timer_stop(T_bench);
     t = timer_read(T_bench);
     reference_total += t;
 
-    for (i = 0; i < T_last; i++)
-    {
+    /* Default */
+    for (i = 0; i < T_last; i++) {
         timer_clear(i);
     }
     timer_start(T_init);
     default_init(&zeta);
     zeta = 0.0;
-    for (it = 1; it <= 1; it++)
-    {
+    for (it = 1; it <= 1; it++) {
         default_iterate(&zeta, &it);
     }
-    for (i = 0; i < NA + 1; i++)
-    {
+    for (i = 0; i < NA + 1; i++) {
         x[i] = 1.0;
     }
     zeta = 0.0;
@@ -151,21 +140,20 @@ int main(int argc, char *argv[])
     default_total += timer_read(T_init);
 
     timer_start(T_bench);
-    for (it = 1; it <= NITER; it++)
-    {
+    for (it = 1; it <= NITER; it++) {
         default_iterate(&zeta, &it);
     }
     timer_stop(T_bench);
     t = timer_read(T_bench);
     default_total += t;
 
+    /* Output */
     printf("\nreference time : %lfs\n", reference_total);
     printf("default time   : %lfs\n", default_total);
     printf("student time   : %lfs\n\n", t_total);
 
-    if (default_total - 0.1 < t_total)
-    {
-        printf("Your implementation should be faster than default - 0.1s!\n\n");
+    if (default_total - 0.1 < t_total) {
+        printf("Your implementation should be faster than (default - 0.1s)!\n\n");
         verified = false;
     }
 

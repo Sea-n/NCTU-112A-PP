@@ -7,8 +7,8 @@ Files:
     Makefile, make.common : make systems.
 
 Build up:
-    make DATASIZE=[LARGE|MEDIUMN|SMALL]
-    (MEDIUMN by default)
+    make DATASIZE=[LARGE|MEDIUM|SMALL]
+    (MEDIUM by default)
     Please make clean first if you want to change DATASIZE.
     (Note: By now, we are only using medium-sized data)
 

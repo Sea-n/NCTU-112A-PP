@@ -10,8 +10,7 @@
 void init(double *zeta);
 void iterate(double *zeta, int *it);
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   int i, j, k, it;
 
   double zeta;
@@ -24,8 +23,7 @@ int main(int argc, char *argv[])
 
   char *t_names[T_last];
 
-  for (i = 0; i < T_last; i++)
-  {
+  for (i = 0; i < T_last; i++) {
     timer_clear(i);
   }
 
@@ -47,16 +45,14 @@ int main(int argc, char *argv[])
   // Do one iteration untimed to init all code and data page tables
   //---->                    (then reinit, start timing, to niter its)
   //---------------------------------------------------------------------
-  for (it = 1; it <= 1; it++)
-  {
+  for (it = 1; it <= 1; it++) {
     iterate(&zeta, &it);
   } // end of do one iteration untimed
 
   //---------------------------------------------------------------------
   // set starting vector to (1, 1, .... 1)
   //---------------------------------------------------------------------
-  for (i = 0; i < NA + 1; i++)
-  {
+  for (i = 0; i < NA + 1; i++) {
     x[i] = 1.0;
   }
 
@@ -74,8 +70,7 @@ int main(int argc, char *argv[])
   // Main Iteration for inverse power method
   //---->
   //---------------------------------------------------------------------
-  for (it = 1; it <= NITER; it++)
-  {
+  for (it = 1; it <= NITER; it++) {
     iterate(&zeta, &it);
   } // end of main iter inv pow meth
 
@@ -92,15 +87,12 @@ int main(int argc, char *argv[])
 
   epsilon = 1.0e-10;
   err = fabs(zeta - zeta_verify_value) / zeta_verify_value;
-  if (err <= epsilon)
-  {
+  if (err <= epsilon) {
     verified = true;
     printf(" VERIFICATION SUCCESSFUL\n");
     printf(" Zeta is    %20.13E\n", zeta);
     printf(" Error is   %20.13E\n", err);
-  }
-  else
-  {
+  } else {
     verified = false;
     printf(" VERIFICATION FAILED\n");
     printf(" Zeta                %20.13E\n", zeta);

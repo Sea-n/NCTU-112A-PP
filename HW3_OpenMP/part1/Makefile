@@ -2,7 +2,7 @@ SHELL=/bin/sh
 BENCHMARK=cg
 BENCHMARKU=CG
 PROGRAMNAME=cg
-DATASIZE=MEDIUMN
+DATASIZE=MEDIUM
 # By now, we are only using medium-sized data
 
 default: ${PROGRAMNAME} grade
