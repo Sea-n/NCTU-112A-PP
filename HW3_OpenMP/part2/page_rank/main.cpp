@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
 
     printf("Loading graph...\n");
     if (USE_BINARY_GRAPH) {
-      g = load_graph_binary(graph_filename.c_str());
+        g = load_graph_binary(graph_filename.c_str());
     } else {
         g = load_graph(argv[1]);
         printf("storing binary form of graph!\n");
@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
 
         // dynamic num_threads
         for (int i = 1; i < max_threads; i *= 2) {
-          num_threads.push_back(i);
+            num_threads.push_back(i);
         }
         num_threads.push_back(max_threads);
         int n_usage = num_threads.size();
@@ -133,7 +133,7 @@ int main(int argc, char** argv) {
 
             std::cout << "Testing Correctness of Page Rank\n";
             if (!compareApprox(g, sol4, sol1)) {
-              pr_check = false;
+                pr_check = false;
             }
 
             char buf[1024];
@@ -164,7 +164,7 @@ int main(int argc, char** argv) {
         if (!pr_check)
             std::cout << "Page Rank is not Correct" << std::endl;
         std::cout << std::endl << "Relative Speedup to Reference: " << std::endl <<  relative_timing.str();
-    // Run the code with only one thread count and only report speedup
+        // Run the code with only one thread count and only report speedup
     } else {
         bool pr_check = true;
         double* sol1;
@@ -208,7 +208,7 @@ int main(int argc, char** argv) {
 
         std::cout << "Testing Correctness of Page Rank\n";
         if (!compareApprox(g, sol4, sol1)) {
-          pr_check = false;
+            pr_check = false;
         }
 
 
