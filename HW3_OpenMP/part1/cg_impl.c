@@ -48,10 +48,11 @@ void conj_grad(int colidx[], int rowstr[],
         //       unrolled-by-two version is some 10% faster.
         //       The unrolled-by-8 version below is significantly faster
         //       on the Cray t3d - overall speed of code is 1.5 times faster.
+        #pragma omp parallel for
         for (j = 0; j < lastrow - firstrow + 1; j++) {
             sum = 0.0;
             for (k = rowstr[j]; k < rowstr[j + 1]; k++) {
-                sum = sum + a[k] * p[colidx[k]];
+                sum += a[k] * p[colidx[k]];
             }
             q[j] = sum;
         }
