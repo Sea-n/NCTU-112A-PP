@@ -78,6 +78,7 @@ void run_on_graph(int idx, graph* g, int num_threads, int num_runs,
 
     omp_set_num_threads(num_threads);
 
+	/* Top-Down BFS */
     std::cout << "\nTop down bfs" << std::endl;
     double ref_top_down_time = std::numeric_limits<int>::max();
     for (int r = 0; r < num_runs; r++) {
@@ -121,6 +122,7 @@ void run_on_graph(int idx, graph* g, int num_threads, int num_runs,
         ref_bottom_up_time = std::min(ref_bottom_up_time, time);
     }
 
+	/* Bottom-Up BFS */
     std::cout << "\nBottom up bfs" << std::endl;
     double stu_bottom_up_time = std::numeric_limits<int>::max();
     for (int r = 0; r < num_runs; r++) {
@@ -149,6 +151,8 @@ void run_on_graph(int idx, graph* g, int num_threads, int num_runs,
         stu.distances[i] = -1;
     }
 
+	/* Hybrid BFS */
+	/*
     std::cout << "\nHybrid bfs" << std::endl;
 
     double ref_hybrid_time = std::numeric_limits<int>::max();
@@ -179,6 +183,7 @@ void run_on_graph(int idx, graph* g, int num_threads, int num_runs,
     }
 
     scores[idx][hybrid] = compute_score(graph_name, correct, ref_hybrid_time, stu_hybrid_time);
+	*/
 
     delete(stu.distances);
     delete(ref.distances);
@@ -282,11 +287,18 @@ int main(int argc, char** argv) {
     printf("Max system threads = %d\n", omp_get_max_threads());
     printf("Running with %d threads\n", num_threads);
 
+/*
     std::vector<std::string> grade_graphs = { "grid1000x1000.graph",
                                               "soc-livejournal1_68m.graph",
                                               "com-orkut_117m.graph",
                                               "random_500m.graph",
                                               "rmat_200m.graph"};
+*/
+
+    std::vector<std::string> grade_graphs = { "grid1000x1000.graph",
+                                              "random_10m.graph",
+                                              "soc-pokec_30m.graph",
+                                              "soc-livejournal1_68m.graph"};
 
     std::vector<std::vector<double>> scores(grade_graphs.size());
     // top_down 0
