@@ -49,7 +49,7 @@ graph* load_graph(std::string graph_filename) {
 
 double compute_score(std::string graph_name, bool correct, double ref_time, double stu_time) {
     double max_score = 1.0;
-    double max_perf_score = 0.8 * max_score; 
+    double max_perf_score = 0.8 * max_score;
     double correctness_score = 0.2 * max_score;
     correctness_score = (correct) ? correctness_score : 0;
 
@@ -66,7 +66,7 @@ double compute_score(std::string graph_name, bool correct, double ref_time, doub
     return (correctness_score + perf_score);
 }
 
-void run_on_graph(int idx, graph* g, int num_threads, int num_runs, 
+void run_on_graph(int idx, graph* g, int num_threads, int num_runs,
     std::string graph_name, std::vector<std::vector<double>> &scores) {
 
     solution ref;
@@ -78,7 +78,7 @@ void run_on_graph(int idx, graph* g, int num_threads, int num_runs,
 
     omp_set_num_threads(num_threads);
 
-    std::cout << "\nTop down bfs" << std::endl; 
+    std::cout << "\nTop down bfs" << std::endl;
     double ref_top_down_time = std::numeric_limits<int>::max();
     for (int r = 0; r < num_runs; r++) {
         start = CycleTimer::currentSeconds();
@@ -91,15 +91,15 @@ void run_on_graph(int idx, graph* g, int num_threads, int num_runs,
     for (int r = 0; r < num_runs; r++) {
         start = CycleTimer::currentSeconds();
         bfs_top_down(g, &stu);
-        //reference_bfs_top_down(g, &stu);
+        // reference_bfs_top_down(g, &stu);
         time = CycleTimer::currentSeconds() - start;
         stu_top_down_time = std::min(stu_top_down_time, time);
     }
 
     bool correct = compareArrays(g, ref.distances, stu.distances);
-    
+
     if (!correct) {
-        std::cout << "Top down bfs incorrect" << std::endl; 
+        std::cout << "Top down bfs incorrect" << std::endl;
         std::cout << "ref_time: " <<  ref_top_down_time << "s" << std::endl;
     } else {
         std::cout << "ref_time: " <<  ref_top_down_time << "s" << std::endl;
@@ -121,12 +121,12 @@ void run_on_graph(int idx, graph* g, int num_threads, int num_runs,
         ref_bottom_up_time = std::min(ref_bottom_up_time, time);
     }
 
-    std::cout << "\nBottom up bfs" << std::endl; 
+    std::cout << "\nBottom up bfs" << std::endl;
     double stu_bottom_up_time = std::numeric_limits<int>::max();
     for (int r = 0; r < num_runs; r++) {
         start = CycleTimer::currentSeconds();
         bfs_bottom_up(g, &stu);
-        //reference_bfs_bottom_up(g, &stu);
+        // reference_bfs_bottom_up(g, &stu);
         time = CycleTimer::currentSeconds() - start;
         stu_bottom_up_time = std::min(stu_bottom_up_time, time);
     }
@@ -134,7 +134,7 @@ void run_on_graph(int idx, graph* g, int num_threads, int num_runs,
     correct = compareArrays(g, ref.distances, stu.distances);
 
     if (!correct) {
-        std::cout << "Bottom up bfs incorrect" << std::endl; 
+        std::cout << "Bottom up bfs incorrect" << std::endl;
         std::cout << "ref_time: " <<  ref_bottom_up_time << "s" << std::endl;
     } else {
         std::cout << "ref_time: " <<  ref_bottom_up_time << "s" << std::endl;
@@ -149,7 +149,7 @@ void run_on_graph(int idx, graph* g, int num_threads, int num_runs,
         stu.distances[i] = -1;
     }
 
-    std::cout << "\nHybrid bfs" << std::endl; 
+    std::cout << "\nHybrid bfs" << std::endl;
 
     double ref_hybrid_time = std::numeric_limits<int>::max();
     for (int r = 0; r < num_runs; r++) {
@@ -163,15 +163,15 @@ void run_on_graph(int idx, graph* g, int num_threads, int num_runs,
     for (int r = 0; r < num_runs; r++) {
         start = CycleTimer::currentSeconds();
         bfs_hybrid(g, &stu);
-        //reference_bfs_hybrid(g, &stu);
+        // reference_bfs_hybrid(g, &stu);
         time = CycleTimer::currentSeconds() - start;
         stu_hybrid_time = std::min(stu_hybrid_time, time);
     }
-    
+
     correct = compareArrays(g, ref.distances, stu.distances);
-    
+
     if (!correct) {
-        std::cout << "Hybrid bfs incorrect" << std::endl; 
+        std::cout << "Hybrid bfs incorrect" << std::endl;
         std::cout << "ref_time: " <<  ref_hybrid_time << "s" << std::endl;
     } else {
         std::cout << "ref_time: " <<  ref_hybrid_time << "s" << std::endl;
@@ -192,14 +192,14 @@ void print_separator_line() {
 }
 
 void print_scores(std::vector<std::string> grade_graphs, std::vector<std::vector<double>> scores) {
-    
+
     std::cout.precision(2);
     std::cout.setf(std::ios::fixed, std:: ios::floatfield);
     std::cout<<std::endl<<std::endl;
 
     print_separator_line();
 
-    std::cout<<"SCORES :"; 
+    std::cout<<"SCORES :";
     for (int i = 0; i < (28 - 8); i++) {
         std::cout<<" ";
     }
@@ -221,7 +221,7 @@ void print_scores(std::vector<std::string> grade_graphs, std::vector<std::vector
 
         int *max_scores = small ? max_scores_small : max_scores_large;
 
-        total_score +=  scores[g][top_down] * max_scores[top_down] 
+        total_score +=  scores[g][top_down] * max_scores[top_down]
                       + scores[g][bott_up] * max_scores[bott_up]
                       + scores[g][hybrid] * max_scores[hybrid];
 
@@ -231,7 +231,7 @@ void print_scores(std::vector<std::string> grade_graphs, std::vector<std::vector
         }
 
         std::cout<<"| ";
-        std::cout<<"     "<<scores[g][top_down] * max_scores[top_down]<<" / "<<max_scores[top_down]<<" |"; 
+        std::cout<<"     "<<scores[g][top_down] * max_scores[top_down]<<" / "<<max_scores[top_down]<<" |";
         std::cout<<"     "<<scores[g][bott_up] * max_scores[bott_up]<<" / "<<max_scores[bott_up]<<" |";
         std::cout<<"     "<<scores[g][hybrid] * max_scores[hybrid]<<" / "<<max_scores[hybrid]<<" |"<<std::endl;;
 
@@ -278,7 +278,7 @@ int main(int argc, char** argv) {
     }
 
     graph_dir = argv[optind];
-  
+
     printf("Max system threads = %d\n", omp_get_max_threads());
     printf("Running with %d threads\n", num_threads);
 
@@ -286,7 +286,7 @@ int main(int argc, char** argv) {
                                               "soc-livejournal1_68m.graph",
                                               "com-orkut_117m.graph",
                                               "random_500m.graph",
-                                              "rmat_200m.graph"};                                       
+                                              "rmat_200m.graph"};
 
     std::vector<std::vector<double>> scores(grade_graphs.size());
     // top_down 0
@@ -300,7 +300,7 @@ int main(int argc, char** argv) {
     for (auto& graph_name: grade_graphs) {
         graph* g = load_graph(graph_dir + '/' + graph_name);
         std::cout << "\nGraph: " << graph_name << std::endl;
-        run_on_graph(idx, g, num_threads, num_runs, graph_name, scores);    
+        run_on_graph(idx, g, num_threads, num_runs, graph_name, scores);
         free_graph(g);
         idx++;
     }

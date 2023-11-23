@@ -3,8 +3,7 @@
 
 using Vertex = int;
 
-struct graph
-{
+struct graph {
     // Number of edges in the graph
     int num_edges;
     // Number of vertices in the graph

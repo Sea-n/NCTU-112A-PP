@@ -138,21 +138,21 @@
             if (GHz_str) {
               *GHz_str = '\0';
               if (1 == sscanf(after_at, "%f", &GHz)) {
-                //printf("GHz = %f\n", GHz);
+                // printf("GHz = %f\n", GHz);
                 secondsPerTick_val = 1e-9f / GHz;
                 break;
               }
             } else if (MHz_str) {
               *MHz_str = '\0';
               if (1 == sscanf(after_at, "%f", &MHz)) {
-                //printf("MHz = %f\n", MHz);
+                // printf("MHz = %f\n", MHz);
                 secondsPerTick_val = 1e-6f / GHz;
                 break;
               }
             }
           }
         } else if (1 == sscanf(input, "cpu MHz : %f", &MHz)) {
-          //printf("MHz = %f\n", MHz);
+          // printf("MHz = %f\n", MHz);
           secondsPerTick_val = 1e-6f / MHz;
           break;
         }

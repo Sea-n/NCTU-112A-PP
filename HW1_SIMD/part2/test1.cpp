@@ -14,6 +14,6 @@ void test1(float* a, float* b, float* c, int N) {
   fasttime_t time2 = gettime();
 
   double elapsedf = tdiff(time1, time2);
-  std::cout << "Elapsed execution time of the loop in test1():\n" 
+  std::cout << "Elapsed execution time of the loop in test1():\n"
     << elapsedf << "sec (N: " << N << ", I: " << I << ")\n";
 }

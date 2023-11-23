@@ -33,16 +33,14 @@
 // Also note that if you processors' speeds change (i.e. processors
 // scaling) or if you are in a heterogenous environment, you will
 // likely get spurious results.
-class CycleTimer
-{
+class CycleTimer {
 public:
   typedef unsigned long long SysClock;
 
   //////////
   // Return the current CPU time, in terms of clock ticks.
   // Time zero is at some arbitrary point in the past.
-  static SysClock currentTicks()
-  {
+  static SysClock currentTicks() {
 #if defined(__APPLE__) && !defined(__x86_64__)
     return mach_absolute_time();
 #elif defined(_WIN32)
@@ -71,20 +69,17 @@ public:
   // Return the current CPU time, in terms of seconds.
   // This is slower than currentTicks().  Time zero is at
   // some arbitrary point in the past.
-  static double currentSeconds()
-  {
+  static double currentSeconds() {
     return currentTicks() * secondsPerTick();
   }
 
   //////////
   // Return the conversion from seconds to ticks.
-  static double ticksPerSecond()
-  {
+  static double ticksPerSecond() {
     return 1.0 / secondsPerTick();
   }
 
-  static const char *tickUnits()
-  {
+  static const char *tickUnits() {
 #if defined(__APPLE__) && !defined(__x86_64__)
     return "ns";
 #elif defined(__WIN32__) || defined(__x86_64__)
@@ -96,8 +91,7 @@ public:
 
   //////////
   // Return the conversion from ticks to seconds.
-  static double secondsPerTick()
-  {
+  static double secondsPerTick() {
     static bool initialized = false;
     static double secondsPerTick_val;
     if (initialized)
@@ -107,8 +101,7 @@ public:
     int args[] = {CTL_HW, HW_CPU_FREQ};
     unsigned int Hz;
     size_t len = sizeof(Hz);
-    if (sysctl(args, 2, &Hz, &len, NULL, 0) != 0)
-    {
+    if (sysctl(args, 2, &Hz, &len, NULL, 0) != 0) {
       fprintf(stderr, "Failed to initialize secondsPerTick_val!\n");
       exit(-1);
     }
@@ -128,51 +121,40 @@ public:
 #else
     FILE *fp = fopen("/proc/cpuinfo", "r");
     char input[1024];
-    if (!fp)
-    {
+    if (!fp) {
       fprintf(stderr, "CycleTimer::resetScale failed: couldn't find /proc/cpuinfo.");
       exit(-1);
     }
     // In case we don't find it, e.g. on the N900
     secondsPerTick_val = 1e-9;
-    while (!feof(fp) && fgets(input, 1024, fp))
-    {
+    while (!feof(fp) && fgets(input, 1024, fp)) {
       // NOTE(boulos): Because reading cpuinfo depends on dynamic
       // frequency scaling it's better to read the @ sign first
       float GHz, MHz;
-      if (strstr(input, "model name"))
-      {
+      if (strstr(input, "model name")) {
         char *at_sign = strstr(input, "@");
-        if (at_sign)
-        {
+        if (at_sign) {
           char *after_at = at_sign + 1;
           char *GHz_str = strstr(after_at, "GHz");
           char *MHz_str = strstr(after_at, "MHz");
-          if (GHz_str)
-          {
+          if (GHz_str) {
             *GHz_str = '\0';
-            if (1 == sscanf(after_at, "%f", &GHz))
-            {
-              //printf("GHz = %f\n", GHz);
+            if (1 == sscanf(after_at, "%f", &GHz)) {
+              // printf("GHz = %f\n", GHz);
               secondsPerTick_val = 1e-9f / GHz;
               break;
             }
-          }
-          else if (MHz_str)
-          {
+          } else if (MHz_str) {
             *MHz_str = '\0';
-            if (1 == sscanf(after_at, "%f", &MHz))
-            {
-              //printf("MHz = %f\n", MHz);
+            if (1 == sscanf(after_at, "%f", &MHz)) {
+              // printf("MHz = %f\n", MHz);
               secondsPerTick_val = 1e-6f / GHz;
               break;
             }
           }
         }
-      }
-      else if (1 == sscanf(input, "cpu MHz : %f", &MHz))
-      {
-        //printf("MHz = %f\n", MHz);
+      } else if (1 == sscanf(input, "cpu MHz : %f", &MHz)) {
+        // printf("MHz = %f\n", MHz);
         secondsPerTick_val = 1e-6f / MHz;
         break;
       }
@@ -186,8 +168,7 @@ public:
 
   //////////
   // Return the conversion from ticks to milliseconds.
-  static double msPerTick()
-  {
+  static double msPerTick() {
     return secondsPerTick() * 1000.0;
   }
 

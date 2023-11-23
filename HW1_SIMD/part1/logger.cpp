@@ -1,15 +1,12 @@
 #include "logger.h"
 #include "PPintrin.h"
 
-void Logger::addLog(const char *instruction, __pp_mask mask, int N)
-{
+void Logger::addLog(const char *instruction, __pp_mask mask, int N) {
   Log newLog;
   strcpy(newLog.instruction, instruction);
   newLog.mask = 0;
-  for (int i = 0; i < N; i++)
-  {
-    if (mask.value[i])
-    {
+  for (int i = 0; i < N; i++) {
+    if (mask.value[i]) {
       newLog.mask |= (((unsigned long long)1) << i);
       stats.utilized_lane++;
     }
@@ -19,8 +16,7 @@ void Logger::addLog(const char *instruction, __pp_mask mask, int N)
   log.push_back(newLog);
 }
 
-void Logger::printStats()
-{
+void Logger::printStats() {
   printf("****************** Printing Vector Unit Statistics *******************\n");
   printf("Vector Width:              %d\n", VECTOR_WIDTH);
   printf("Total Vector Instructions: %lld\n", stats.total_instructions);
@@ -29,22 +25,16 @@ void Logger::printStats()
   printf("Total Vector Lanes:        %lld\n", stats.total_lane);
 }
 
-void Logger::printLog()
-{
+void Logger::printLog() {
   printf("***************** Printing Vector Unit Execution Log *****************\n");
   printf(" Instruction | Vector Lane Occupancy ('*' for active, '_' for inactive)\n");
   printf("------------- --------------------------------------------------------\n");
-  for (int i = 0; i < log.size(); i++)
-  {
+  for (int i = 0; i < log.size(); i++) {
     printf("%12s | ", log[i].instruction);
-    for (int j = 0; j < VECTOR_WIDTH; j++)
-    {
-      if (log[i].mask & (((unsigned long long)1) << j))
-      {
+    for (int j = 0; j < VECTOR_WIDTH; j++) {
+      if (log[i].mask & (((unsigned long long)1) << j)) {
         printf("*");
-      }
-      else
-      {
+      } else {
         printf("_");
       }
     }

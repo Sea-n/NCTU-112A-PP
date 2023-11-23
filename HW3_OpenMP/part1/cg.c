@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
 
   double t, t_total;
 
-  //char Class;
+  // char Class;
   logical verified;
   double zeta_verify_value, epsilon, err;
 

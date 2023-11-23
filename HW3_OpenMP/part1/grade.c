@@ -89,8 +89,7 @@ int main(int argc, char *argv[]) {
         printf(" VERIFICATION SUCCESSFUL\n");
         printf(" Zeta is    %20.13E\n", zeta);
         printf(" Error is   %20.13E\n", err);
-    }
-    else {
+    } else {
         verified = false;
         printf(" VERIFICATION FAILED\n");
         printf(" Zeta                %20.13E\n", zeta);

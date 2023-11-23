@@ -322,13 +322,11 @@ void sparse(double a[],
                         a[k] = 0.0;
                         cont40 = true;
                         break;
-                    }
-                    else if (colidx[k] == -1) {
+                    } else if (colidx[k] == -1) {
                         colidx[k] = jcol;
                         cont40 = true;
                         break;
-                    }
-                    else if (colidx[k] == jcol) {
+                    } else if (colidx[k] == jcol) {
                         //--------------------------------------------------------------
                         // ... mark the duplicated entry
                         //--------------------------------------------------------------
@@ -357,8 +355,7 @@ void sparse(double a[],
     for (j = 0; j < nrows; j++) {
         if (j > 0) {
             j1 = rowstr[j] - nzloc[j - 1];
-        }
-        else {
+        } else {
             j1 = 0;
         }
         j2 = rowstr[j + 1] - nzloc[j];

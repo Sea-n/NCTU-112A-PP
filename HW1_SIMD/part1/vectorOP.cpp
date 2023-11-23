@@ -2,8 +2,7 @@
 /* Author: Sean Wei <https://sean.cat/> */
 
 // implementation of absSerial(), but it is vectorized using PP intrinsics
-void absVector(float *values, float *output, int N)
-{
+void absVector(float *values, float *output, int N) {
   __pp_vec_float x;
   __pp_vec_float result;
   __pp_vec_float zero = _pp_vset_float(0.f);
@@ -12,8 +11,7 @@ void absVector(float *values, float *output, int N)
   //  Note: Take a careful look at this loop indexing.  This example
   //  code is not guaranteed to work when (N % VECTOR_WIDTH) != 0.
   //  Why is that the case?
-  for (int i = 0; i < N; i += VECTOR_WIDTH)
-  {
+  for (int i = 0; i < N; i += VECTOR_WIDTH) {
 
     // All ones
     maskAll = _pp_init_ones();
@@ -43,8 +41,7 @@ void absVector(float *values, float *output, int N)
   _pp_vstore_float(output + N, zero, maskAll);
 }
 
-void clampedExpVector(float *values, int *exponents, float *output, int N)
-{
+void clampedExpVector(float *values, int *exponents, float *output, int N) {
   //
   // PP STUDENTS: Implement your vectorized version of
   // clampedExpSerial() here.
@@ -85,8 +82,7 @@ void clampedExpVector(float *values, int *exponents, float *output, int N)
 // returns the sum of all elements in values
 // You can assume N is a multiple of VECTOR_WIDTH
 // You can assume VECTOR_WIDTH is a power of 2
-float arraySumVector(float *values, int N)
-{
+float arraySumVector(float *values, int N) {
 
   //
   // PP STUDENTS: Implement your vectorized version of arraySumSerial here

@@ -27,8 +27,7 @@ extern void writePPMImage(
 void
 scaleAndShift(float& x0, float& x1, float& y0, float& y1,
               float scale,
-              float shiftX, float shiftY)
-{
+              float shiftX, float shiftY) {
 
     x0 *= scale;
     x1 *= scale;
@@ -121,7 +120,7 @@ int main(int argc, char** argv) {
 
     int* output_serial = new int[width*height];
     int* output_thread = new int[width*height];
-    
+
     //
     // Run the serial implementation.  Run the code three times and
     // take the minimum to get a good estimate.

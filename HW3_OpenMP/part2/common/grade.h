@@ -34,15 +34,13 @@
  * Printing functions
  */
 
-static void sep(std::ostream& out, char separator = '-', int length = 78)
-{
+static void sep(std::ostream& out, char separator = '-', int length = 78) {
     for (int i = 0; i < length; i++)
       out << separator;
     out << std::endl;
 }
 
-static void printTimingApp(std::ostream& timing, const char* appName)
-{
+static void printTimingApp(std::ostream& timing, const char* appName) {
   std::cout << std::endl;
   std::cout << "Timing results for " << appName << ":" << std::endl;
   sep(std::cout, '=', 75);
@@ -57,11 +55,10 @@ static void printTimingApp(std::ostream& timing, const char* appName)
  */
 
 template <class T>
-bool compareArrays(Graph graph, T* ref, T* stu)
-{
+bool compareArrays(Graph graph, T* ref, T* stu) {
   for (int i = 0; i < graph->num_nodes; i++) {
     if (ref[i] != stu[i]) {
-      std::cerr << "*** Results disagree at " << i << " expected " 
+      std::cerr << "*** Results disagree at " << i << " expected "
         << ref[i] << " found " << stu[i] << std::endl;
       return false;
     }
@@ -70,11 +67,10 @@ bool compareArrays(Graph graph, T* ref, T* stu)
 }
 
 template <class T>
-bool compareApprox(Graph graph, T* ref, T* stu)
-{
+bool compareApprox(Graph graph, T* ref, T* stu) {
   for (int i = 0; i < graph->num_nodes; i++) {
     if (fabs(ref[i] - stu[i]) > EPSILON) {
-      std::cerr << "*** Results disagree at " << i << " expected " 
+      std::cerr << "*** Results disagree at " << i << " expected "
         << ref[i] << " found " << stu[i] << std::endl;
       return false;
     }
@@ -83,8 +79,7 @@ bool compareApprox(Graph graph, T* ref, T* stu)
 }
 
 template <class T>
-bool compareArraysAndDisplay(Graph graph, T* ref, T*stu) 
-{
+bool compareArraysAndDisplay(Graph graph, T* ref, T*stu) {
   printf("\n----------------------------------\n");
   printf("Visualization of student results");
   printf("\n----------------------------------\n\n");
@@ -107,38 +102,37 @@ bool compareArraysAndDisplay(Graph graph, T* ref, T*stu)
     }
     printf("\n");
   }
-  
+
   return compareArrays<T>(graph, ref, stu);
 }
 
 template <class T>
-bool compareArraysAndRadiiEst(Graph graph, T* ref, T* stu) 
-{
+bool compareArraysAndRadiiEst(Graph graph, T* ref, T* stu) {
   bool isCorrect = true;
   for (int i = 0; i < graph->num_nodes; i++) {
     if (ref[i] != stu[i]) {
       std::cerr << "*** Results disagree at " << i << " expected "
         << ref[i] << " found " << stu[i] << std::endl;
-	isCorrect = false;
+    isCorrect = false;
     }
   }
   int stuMaxVal = -1;
   int refMaxVal = -1;
   #pragma omp parallel for schedule(dynamic, 512) reduction(max: stuMaxVal)
   for (int i = 0; i < graph->num_nodes; i++) {
-	if (stu[i] > stuMaxVal)
-		stuMaxVal = stu[i];
+    if (stu[i] > stuMaxVal)
+        stuMaxVal = stu[i];
   }
   #pragma omp parallel for schedule(dynamic, 512) reduction(max: refMaxVal)
   for (int i = 0; i < graph->num_nodes; i++) {
         if (ref[i] > refMaxVal)
                 refMaxVal = ref[i];
   }
- 
+
   if (refMaxVal != stuMaxVal) {
-	std::cerr << "*** Radius estimates differ. Expected: " << refMaxVal << " Got: " << stuMaxVal << std::endl;
-	isCorrect = false;
-  }   
+    std::cerr << "*** Radius estimates differ. Expected: " << refMaxVal << " Got: " << stuMaxVal << std::endl;
+    isCorrect = false;
+  }
   return isCorrect;
 }
 

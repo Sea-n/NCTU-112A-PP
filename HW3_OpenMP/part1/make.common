@@ -19,7 +19,7 @@ CCOMPILE_pp = $(CC_pp)  -c $(C_INC_pp) $(CFLAGS_pp)
 # "unknown". This means that if you don't specify CLASS=
 # on the command line, you'll get an error. It would be nice
 # to be able to avoid this, but we'd have to get information
-# from the setparams back to the make program, which isn't easy. 
+# from the setparams back to the make program, which isn't easy.
 CLASS=U
 
 config:

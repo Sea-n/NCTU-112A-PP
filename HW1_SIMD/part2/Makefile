@@ -42,7 +42,7 @@ ifeq ($(ASSEMBLE),1)
 	if [ ! -d "./assembly" ]; then mkdir "./assembly"; fi
 	$(CXX) $(CXXFLAGS) -c $< -o assembly/$(basename $<)$(SUFFIX).s
 else
-	$(CXX) $(CXXFLAGS) -c $< 
+	$(CXX) $(CXXFLAGS) -c $<
 endif
 
 $(TARGET): $(OBJS)

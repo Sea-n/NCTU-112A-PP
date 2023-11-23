@@ -77,8 +77,7 @@ void usage(const char* progname) {
 }
 
 void initValue(float* values1, float* values2, double* values3, float* output, unsigned int N) {
-  for (unsigned int i=0; i<N; i++)
-  {
+  for (unsigned int i=0; i<N; i++) {
     // random input values
     values1[i] = -1.f + 4.f * static_cast<float>(rand()) / RAND_MAX;
     values2[i] = -1.f + 4.f * static_cast<float>(rand()) / RAND_MAX;

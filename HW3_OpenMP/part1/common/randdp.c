@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 
-double randlc( double *x, double a )
-{
+double randlc( double *x, double a ) {
   //--------------------------------------------------------------------
   //
   //  This routine returns a uniform pseudorandom double precision number in the
@@ -68,8 +67,7 @@ double randlc( double *x, double a )
 }
 
 
-void vranlc( int n, double *x, double a, double y[] )
-{
+void vranlc( int n, double *x, double a, double y[] ) {
   //--------------------------------------------------------------------
   //
   //  This routine generates N uniform pseudorandom double precision numbers in

@@ -1,8 +1,7 @@
 --- test2.cpp
 +++ test2.cpp
 @@ -14,9 +14,8 @@
-     for (int j = 0; j < N; j++)
-     {
+     for (int j = 0; j < N; j++) {
        /* max() */
 -      c[j] = a[j];
 -      if (b[j] > a[j])

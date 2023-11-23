@@ -1,7 +1,7 @@
 #include "type.h"
 
-//small datasize
-#ifdef SMALL 
+// small datasize
+#ifdef SMALL
 #define NA        7000
 #define NONZER    8
 #define SHIFT     12
@@ -10,7 +10,7 @@
 #define VALID_RESULT 10.362595087124
 #endif
 
-//midiumn datasize
+// midiumn datasize
 #ifdef MEDIUM
 #define NA        14000
 #define NONZER    11
@@ -20,7 +20,7 @@
 #define VALID_RESULT 17.130235054029
 #endif
 
-//large datasize
+// large datasize
 #ifdef LARGE
 #define NA        75000
 #define NONZER    13

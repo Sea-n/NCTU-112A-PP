@@ -3,8 +3,7 @@
 #include <math.h>
 #include <algorithm>
 
-void writePPMImage(int *data, int width, int height, const char *filename, int maxIterations)
-{
+void writePPMImage(int *data, int width, int height, const char *filename, int maxIterations) {
     FILE *fp = fopen(filename, "wb");
 
     // write ppm header
@@ -12,8 +11,7 @@ void writePPMImage(int *data, int width, int height, const char *filename, int m
     fprintf(fp, "%d %d\n", width, height);
     fprintf(fp, "255\n");
 
-    for (int i = 0; i < width * height; ++i)
-    {
+    for (int i = 0; i < width * height; ++i) {
 
         // Clamp iteration count for this pixel, then scale the value
         // to 0-1 range.  Raise resulting value to a power (<1) to

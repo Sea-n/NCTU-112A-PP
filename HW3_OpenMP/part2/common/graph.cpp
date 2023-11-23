@@ -10,8 +10,7 @@
 #define GRAPH_HEADER_TOKEN ((int) 0xDEADBEEF)
 
 
-void free_graph(Graph graph)
-{
+void free_graph(Graph graph) {
   free(graph->outgoing_starts);
   free(graph->outgoing_edges);
 
@@ -21,22 +20,18 @@ void free_graph(Graph graph)
 }
 
 
-void build_start(graph* graph, int* scratch)
-{
+void build_start(graph* graph, int* scratch) {
   int num_nodes = graph->num_nodes;
   graph->outgoing_starts = (int*)malloc(sizeof(int) * num_nodes);
-  for(int i = 0; i < num_nodes; i++)
-  {
+  for(int i = 0; i < num_nodes; i++) {
     graph->outgoing_starts[i] = scratch[i];
   }
 }
 
-void build_edges(graph* graph, int* scratch)
-{
+void build_edges(graph* graph, int* scratch) {
   int num_nodes = graph->num_nodes;
   graph->outgoing_edges = (int*)malloc(sizeof(int) * graph->num_edges);
-  for(int i = 0; i < graph->num_edges; i++)
-  {
+  for(int i = 0; i < graph->num_edges; i++) {
     graph->outgoing_edges[i] = scratch[num_nodes + i];
   }
 }
@@ -45,7 +40,7 @@ void build_edges(graph* graph, int* scratch)
 // graph, build an incoming adjacency list representation
 void build_incoming_edges(graph* graph) {
 
-    //printf("Beginning build_incoming... (%d nodes)\n", graph->num_nodes);
+    // printf("Beginning build_incoming... (%d nodes)\n", graph->num_nodes);
 
     int num_nodes = graph->num_nodes;
     int* node_counts = (int*)malloc(sizeof(int) * num_nodes);
@@ -68,19 +63,19 @@ void build_incoming_edges(graph* graph) {
             total_edges++;
         }
     }
-    //printf("Total edges: %d\n", total_edges);
-    //printf("Computed incoming edge counts.\n");
+    // printf("Total edges: %d\n", total_edges);
+    // printf("Computed incoming edge counts.\n");
 
     // build the starts array
     graph->incoming_starts[0] = 0;
     for (int i=1; i<num_nodes; i++) {
         graph->incoming_starts[i] = graph->incoming_starts[i-1] + node_counts[i-1];
-        //printf("%d: %d ", i, graph->incoming_starts[i]);
+        // printf("%d: %d ", i, graph->incoming_starts[i]);
     }
-    //printf("\n");
-    //printf("Last edge=%d\n", graph->incoming_starts[num_nodes-1] + node_counts[num_nodes-1]);
+    // printf("\n");
+    // printf("Last edge=%d\n", graph->incoming_starts[num_nodes-1] + node_counts[num_nodes-1]);
 
-    //printf("Computed per-node incoming starts.\n");
+    // printf("Computed per-node incoming starts.\n");
 
     // now perform the scatter
     for (int i=0; i<num_nodes; i++) {
@@ -128,15 +123,13 @@ void build_incoming_edges(graph* graph) {
     free(node_scatter);
 }
 
-void get_meta_data(std::ifstream& file, graph* graph)
-{
+void get_meta_data(std::ifstream& file, graph* graph) {
   // going back to the beginning of the file
   file.clear();
   file.seekg(0, std::ios::beg);
   std::string buffer;
   std::getline(file, buffer);
-  if ((buffer.compare(std::string("AdjacencyGraph"))))
-  {
+  if ((buffer.compare(std::string("AdjacencyGraph")))) {
     std::cout << "Invalid input file" << buffer << std::endl;
     exit(1);
   }
@@ -157,12 +150,10 @@ void get_meta_data(std::ifstream& file, graph* graph)
 
 }
 
-void read_graph_file(std::ifstream& file, int* scratch)
-{
+void read_graph_file(std::ifstream& file, int* scratch) {
   std::string buffer;
   int idx = 0;
-  while(!file.eof())
-  {
+  while(!file.eof()) {
     buffer.clear();
     std::getline(file, buffer);
 
@@ -173,8 +164,7 @@ void read_graph_file(std::ifstream& file, int* scratch)
     while (!parse.fail()) {
         int v;
         parse >> v;
-        if (parse.fail())
-        {
+        if (parse.fail()) {
             break;
         }
         scratch[idx] = v;
@@ -183,8 +173,7 @@ void read_graph_file(std::ifstream& file, int* scratch)
   }
 }
 
-void print_graph(const graph* graph)
-{
+void print_graph(const graph* graph) {
 
     printf("Graph pretty print:\n");
     printf("num_nodes=%d\n", graph->num_nodes);
@@ -212,8 +201,7 @@ void print_graph(const graph* graph)
     }
 }
 
-Graph load_graph(const char* filename)
-{
+Graph load_graph(const char* filename) {
   graph* graph = (struct graph*)(malloc(sizeof(struct graph)));
 
   // open the file
@@ -230,13 +218,12 @@ Graph load_graph(const char* filename)
 
   build_incoming_edges(graph);
 
-  //print_graph(graph);
+  // print_graph(graph);
 
   return graph;
 }
 
-Graph load_graph_binary(const char* filename)
-{
+Graph load_graph_binary(const char* filename) {
     graph* graph = (struct graph*)(malloc(sizeof(struct graph)));
 
     FILE* input = fopen(filename, "rb");
@@ -277,7 +264,7 @@ Graph load_graph_binary(const char* filename)
     fclose(input);
 
     build_incoming_edges(graph);
-    //print_graph(graph);
+    // print_graph(graph);
     return graph;
 }
 

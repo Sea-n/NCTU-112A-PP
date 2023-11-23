@@ -1,19 +1,18 @@
 #ifndef __BFS_H__
 #define __BFS_H__
 
-//#define DEBUG
+// #define DEBUG
 
 #include "common/graph.h"
 
-struct solution
-{
+struct solution {
   int *distances;
 };
 
 struct vertex_set {
   // # of vertices in the set
   int count;
-  // max size of buffer vertices 
+  // max size of buffer vertices
   int max_vertices;
   // array of vertex ids in set
   int *vertices;

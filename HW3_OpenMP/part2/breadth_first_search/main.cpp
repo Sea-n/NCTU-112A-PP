@@ -23,8 +23,7 @@ int main(int argc, char** argv) {
     int  num_threads = -1;
     std::string graph_filename;
 
-    if (argc < 2)
-    {
+    if (argc < 2) {
         std::cerr << "Usage: <path/to/graph/file> [num_threads]\n";
         std::cerr << "  To run results for all thread counts: <path/to/graph/file>\n";
         std::cerr << "  Run with a certain number of threads (no correctness run): <path/to/graph/file> <num_threads>\n";
@@ -32,8 +31,7 @@ int main(int argc, char** argv) {
     }
 
     int thread_count = -1;
-    if (argc == 3)
-    {
+    if (argc == 3) {
         thread_count = atoi(argv[2]);
     }
 
@@ -43,8 +41,7 @@ int main(int argc, char** argv) {
 
     printf("----------------------------------------------------------\n");
     printf("Max system threads = %d\n", omp_get_max_threads());
-    if (thread_count > 0)
-    {
+    if (thread_count > 0) {
         thread_count = std::min(thread_count, omp_get_max_threads());
         printf("Running with %d threads\n", thread_count);
     }
@@ -65,16 +62,15 @@ int main(int argc, char** argv) {
     printf("  Edges: %d\n", g->num_edges);
     printf("  Nodes: %d\n", g->num_nodes);
 
-    //If we want to run on all threads
-    if (thread_count <= -1)
-    {
-        //Static assignment to get consistent usage across trials
+    // If we want to run on all threads
+    if (thread_count <= -1) {
+        // Static assignment to get consistent usage across trials
         int max_threads = omp_get_max_threads();
 
-        //static num_threadss
+        // static num_threadss
         std::vector<int> num_threads;
 
-        //dynamic num_threads
+        // dynamic num_threads
         for (int i = 1; i < max_threads; i *= 2) {
           num_threads.push_back(i);
         }
@@ -88,7 +84,7 @@ int main(int argc, char** argv) {
         solution sol3;
         sol3.distances = (int*)malloc(sizeof(int) * g->num_nodes);
 
-        //Solution sphere
+        // Solution sphere
         solution sol4;
         sol4.distances = (int*)malloc(sizeof(int) * g->num_nodes);
 
@@ -109,20 +105,19 @@ int main(int argc, char** argv) {
         ref_timing      << "Threads  Top Down          Bottom Up         Hybrid\n";
         relative_timing << "Threads       Top Down          Bottom Up             Hybrid\n";
 
-        //Loop through assignment values;
-        for (int i = 0; i < n_usage; i++)
-        {
+        // Loop through assignment values;
+        for (int i = 0; i < n_usage; i++) {
             printf("----------------------------------------------------------\n");
             std::cout << "Running with " << num_threads[i] << " threads" << std::endl;
-            //Set thread count
+            // Set thread count
             omp_set_num_threads(num_threads[i]);
 
-            //Run implementations
+            // Run implementations
             start = CycleTimer::currentSeconds();
             bfs_top_down(g, &sol1);
             top_time = CycleTimer::currentSeconds() - start;
 
-            //Run reference implementation
+            // Run reference implementation
             start = CycleTimer::currentSeconds();
             reference_bfs_top_down(g, &sol4);
             ref_top_time = CycleTimer::currentSeconds() - start;
@@ -136,12 +131,12 @@ int main(int argc, char** argv) {
                 }
             }
 
-            //Run implementations
+            // Run implementations
             start = CycleTimer::currentSeconds();
             bfs_bottom_up(g, &sol2);
             bottom_time = CycleTimer::currentSeconds() - start;
 
-            //Run reference implementation
+            // Run reference implementation
             start = CycleTimer::currentSeconds();
             reference_bfs_bottom_up(g, &sol4);
             ref_bottom_time = CycleTimer::currentSeconds() - start;
@@ -159,7 +154,7 @@ int main(int argc, char** argv) {
             bfs_hybrid(g, &sol3);
             hybrid_time = CycleTimer::currentSeconds() - start;
 
-            //Run reference implementation
+            // Run reference implementation
             start = CycleTimer::currentSeconds();
             reference_bfs_hybrid(g, &sol4);
             ref_hybrid_time = CycleTimer::currentSeconds() - start;
@@ -173,8 +168,7 @@ int main(int argc, char** argv) {
                 }
             }
 
-            if (i == 0)
-            {
+            if (i == 0) {
                 hybrid_base = hybrid_time;
                 ref_hybrid_base = ref_hybrid_time;
                 top_base = top_time;
@@ -217,10 +211,8 @@ int main(int argc, char** argv) {
         if (!hs_check)
             std::cout << "Hybrid Search is not Correct" << std::endl;
         std::cout << std::endl << "Speedup vs. Reference: " << std::endl <<  relative_timing.str();
-    }
-    //Run the code with only one thread count and only report speedup
-    else
-    {
+    // Run the code with only one thread count and only report speedup
+    } else {
         bool tds_check = true, bus_check = true, hs_check = true;
         solution sol1;
         sol1.distances = (int*)malloc(sizeof(int) * g->num_nodes);
@@ -229,7 +221,7 @@ int main(int argc, char** argv) {
         solution sol3;
         sol3.distances = (int*)malloc(sizeof(int) * g->num_nodes);
 
-        //Solution sphere
+        // Solution sphere
         solution sol4;
         sol4.distances = (int*)malloc(sizeof(int) * g->num_nodes);
 
@@ -244,17 +236,17 @@ int main(int argc, char** argv) {
         timing << "Threads   Top Down    Bottom Up       Hybrid\n";
         ref_timing << "Threads   Top Down    Bottom Up       Hybrid\n";
 
-        //Loop through assignment values;
+        // Loop through assignment values;
         std::cout << "Running with " << thread_count << " threads" << std::endl;
-        //Set thread count
+        // Set thread count
         omp_set_num_threads(thread_count);
 
-        //Run implementations
+        // Run implementations
         start = CycleTimer::currentSeconds();
         bfs_top_down(g, &sol1);
         top_time = CycleTimer::currentSeconds() - start;
 
-        //Run reference implementation
+        // Run reference implementation
         start = CycleTimer::currentSeconds();
         reference_bfs_top_down(g, &sol4);
         ref_top_time = CycleTimer::currentSeconds() - start;
@@ -269,12 +261,12 @@ int main(int argc, char** argv) {
         }
 
 
-        //Run implementations
+        // Run implementations
         start = CycleTimer::currentSeconds();
         bfs_bottom_up(g, &sol2);
         bottom_time = CycleTimer::currentSeconds() - start;
 
-        //Run reference implementation
+        // Run reference implementation
         start = CycleTimer::currentSeconds();
         reference_bfs_bottom_up(g, &sol4);
         ref_bottom_time = CycleTimer::currentSeconds() - start;
@@ -293,7 +285,7 @@ int main(int argc, char** argv) {
         bfs_hybrid(g, &sol3);
         hybrid_time = CycleTimer::currentSeconds() - start;
 
-        //Run reference implementation
+        // Run reference implementation
         start = CycleTimer::currentSeconds();
         reference_bfs_hybrid(g, &sol4);
         ref_hybrid_time = CycleTimer::currentSeconds() - start;

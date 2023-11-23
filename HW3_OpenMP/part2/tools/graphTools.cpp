@@ -263,9 +263,7 @@ int main(int argc, char** argv) {
                   << " avg=" << avg_incoming
                   << " min=" << min_incoming
                   << " max=" << max_incoming << "\n";
-    }
-
-    else {
+    } else {
         print_help(argv[0]);
     }
 
