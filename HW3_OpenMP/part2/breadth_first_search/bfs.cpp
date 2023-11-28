@@ -1,5 +1,6 @@
 #include "bfs.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <cstddef>
@@ -25,7 +26,6 @@ void vertex_set_init(vertex_set *list, int count) {
 
 /* Top-Down Approach */
 void top_down_step(Graph g, vertex_set *frontier, vertex_set *new_frontier, int *distances) {
-    std::vector<int> vec[32];
     #pragma omp parallel for
     for (int i = 0; i < frontier->count; i++) {
         const int node = frontier->vertices[i];
@@ -35,16 +35,11 @@ void top_down_step(Graph g, vertex_set *frontier, vertex_set *new_frontier, int 
         for (const Vertex *outgoing = out_begin; outgoing < out_end; outgoing++) {
             if (distances[*outgoing] == NOT_VISITED_MARKER) {
                 distances[*outgoing] = distances[node] + 1;
-                vec[omp_get_thread_num()].push_back(*outgoing);
+                int index = __sync_fetch_and_add(&new_frontier->count, 1);
+                new_frontier->vertices[index] = *outgoing;
             }
         }
     }
-
-    for (int k=0; k<32; k++)
-        for (const int vtx : vec[k]) {
-            int idx = new_frontier->count++;
-            new_frontier->vertices[idx] = vtx;
-        }
 }
 
 void bfs_top_down(Graph graph, solution *sol) {
@@ -69,7 +64,6 @@ void bfs_top_down(Graph graph, solution *sol) {
 #endif
 
         vertex_set_clear(new_frontier);
-#pragma opm parallel for
         top_down_step(graph, frontier, new_frontier, sol->distances);
 
 #ifdef VERBOSE
@@ -86,27 +80,28 @@ void bfs_top_down(Graph graph, solution *sol) {
 
 /* Buttom-Up Approach */
 void bottom_up_step(Graph g, vertex_set *frontier, vertex_set *new_frontier, int *distances) {
-    std::vector<int> vec[32];
-    #pragma omp parallel for
-    for (int i = 0; i < frontier->count; i++) {
-        const int node = frontier->vertices[i];
-        const Vertex* in_begin = incoming_begin(g, node);
-        const Vertex* in_end = incoming_end(g, node);
+    std::vector<int> fv;
+    for (int i = 0; i < frontier->count; i++)
+        fv.push_back(frontier->vertices[i]);
+    std::sort(fv.begin(), fv.end());
 
-        // attempt to add all neighbors to the new frontier
-        for (const Vertex *incoming = in_begin; incoming < in_end; incoming++) {
-            if (distances[*incoming] == NOT_VISITED_MARKER) {
-                distances[*incoming] = distances[node] + 1;
-                vec[omp_get_thread_num()].push_back(*incoming);
-            }
+    #pragma omp parallel for
+    for (int v = 0; v < g->num_nodes; v++) {
+        if (distances[v] != NOT_VISITED_MARKER)
+            continue;
+
+        const Vertex* in_begin = incoming_begin(g, v);
+        const Vertex* in_end = incoming_end(g, v);
+
+        for (const Vertex *incoming = in_begin; incoming != in_end; incoming++) {
+            if (!std::binary_search(fv.begin(), fv.end(), *incoming))
+                continue;
+            distances[v] = distances[*incoming] + 1;
+            int index = __sync_fetch_and_add(&new_frontier->count, 1);
+            new_frontier->vertices[index] = v;
+            break;
         }
     }
-
-    for (int k=0; k<32; k++)
-        for (const int vtx : vec[k]) {
-            int idx = new_frontier->count++;
-            new_frontier->vertices[idx] = vtx;
-        }
 }
 
 // Implements top-down BFS.
@@ -135,7 +130,6 @@ void bfs_bottom_up(Graph graph, solution *sol) {
 #endif
 
         vertex_set_clear(new_frontier);
-#pragma opm parallel for
         bottom_up_step(graph, frontier, new_frontier, sol->distances);
 
 #ifdef VERBOSE
