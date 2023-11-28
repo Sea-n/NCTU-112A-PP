@@ -1,1 +1,8 @@
 mpi_hello
+one_side_example
+pi_block_linear
+pi_block_tree
+pi_gather
+pi_nonblock_linear
+pi_one_side
+pi_reduce
