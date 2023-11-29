@@ -8,10 +8,10 @@ int main(int argc, char **argv) {
     MPI_Init(&argc, &argv);
 
     int world_size;
-	MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+    MPI_Comm_size(MPI_COMM_WORLD, &world_size);
 
     int world_rank;
-	MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+    MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
     // Get the name of the processor
     char processor_name[MPI_MAX_PROCESSOR_NAME];
