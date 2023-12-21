@@ -10,8 +10,7 @@ __global__ void mandelKernel() {
 }
 
 // Host front-end function that allocates the memory and launches the GPU kernel
-void hostFE (float upperX, float upperY, float lowerX, float lowerY, int* img, int resX, int resY, int maxIterations)
-{
+void hostFE (float upperX, float upperY, float lowerX, float lowerY, int* img, int resX, int resY, int maxIterations) {
     float stepX = (upperX - lowerX) / resX;
     float stepY = (upperY - lowerY) / resY;
 }

@@ -30,9 +30,7 @@ extern void writePPMImage(
     int maxIterations);
 
 void scaleAndShift(float &x0, float &x1, float &y0, float &y1,
-                   float scale,
-                   float shiftX, float shiftY)
-{
+                   float scale, float shiftX, float shiftY) {
 
     x0 *= scale;
     x1 *= scale;
@@ -44,8 +42,7 @@ void scaleAndShift(float &x0, float &x1, float &y0, float &y1,
     y1 += shiftY;
 }
 
-void usage(const char *progname)
-{
+void usage(const char *progname) {
     printf("Usage: %s [options]\n", progname);
     printf("Program Options:\n");
     printf("  -i  --iter <INT>       Use specified interation (>=256)\n");
@@ -54,17 +51,12 @@ void usage(const char *progname)
     printf("  -?  --help             This message\n");
 }
 
-bool verifyResult(int *gold, int *result, int width, int height)
-{
-
+bool verifyResult(int *gold, int *result, int width, int height) {
     int i, j;
 
-    for (i = 0; i < height; i++)
-    {
-        for (j = 0; j < width; j++)
-        {
-            if (abs(gold[i * width + j] - result[i * width + j]) > 0)
-            {
+    for (i = 0; i < height; i++) {
+        for (j = 0; j < width; j++) {
+            if (abs(gold[i * width + j] - result[i * width + j]) > 0) {
                 printf("Mismatch : [%d][%d], Expected : %d, Actual : %d\n",
                        i, j, gold[i * width + j], result[i * width + j]);
                 return 0;
@@ -75,8 +67,7 @@ bool verifyResult(int *gold, int *result, int width, int height)
     return 1;
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 
     const unsigned int width = 1600;
     const unsigned int height = 1200;
@@ -90,57 +81,40 @@ int main(int argc, char **argv)
 
     // parse commandline options ////////////////////////////////////////////
     int opt;
-    static struct option long_options[] = {
-        {"iter", 1, 0, 'i'},
-        {"view", 1, 0, 'v'},
-        {"gpu-only", 1, 0, 'g'},
-        {"help", 0, 0, '?'},
-        {0, 0, 0, 0}};
+    static struct option long_options[] = { {"iter", 1, 0, 'i'}, {"view", 1, 0, 'v'}, {"gpu-only", 1, 0, 'g'}, {"help", 0, 0, '?'}, {0, 0, 0, 0}};
 
-    while ((opt = getopt_long(argc, argv, "i:v:g:?", long_options, NULL)) != EOF)
-    {
+    while ((opt = getopt_long(argc, argv, "i:v:g:?", long_options, NULL)) != EOF) {
 
-        switch (opt)
-        {
-        case 'i':
-        {
+        switch (opt) {
+        case 'i': {
             int iter = atoi(optarg);
-            if (iter < 256)
-            {
+            if (iter < 256) {
                 fprintf(stderr, "Iteration should >= 256\n");
                 return 1;
             }
             maxIterations = iter;
             break;
         }
-        case 'v':
-        {
+        case 'v': {
             int viewIndex = atoi(optarg);
             // change view settings
-            if (viewIndex == 2)
-            {
+            if (viewIndex == 2) {
                 float scaleValue = .015f;
                 float shiftX = -.986f;
                 float shiftY = .30f;
                 scaleAndShift(x0, x1, y0, y1, scaleValue, shiftX, shiftY);
-            }
-            else if (viewIndex > 1)
-            {
+            } else if (viewIndex > 1) {
                 fprintf(stderr, "Invalid view index\n");
                 return 1;
             }
             break;
         }
-        case 'g':
-        {
+        case 'g': {
             int flag = atoi(optarg);
             // change GPU settings
-            if (flag == 1 || flag == 0)
-            {
+            if (flag == 1 || flag == 0){
                 isGPUOnly = flag;
-            }
-            else
-            {
+            } else {
                 fprintf(stderr, "Invalid setting. Only allow 0 or 1.\n");
                 return 1;
             }
@@ -162,10 +136,8 @@ int main(int argc, char **argv)
     // take the minimum to get a good estimate.
     //
     double minSerial = 1e30;
-    if (!isGPUOnly)
-    {
-        for (int i = 0; i < 5; ++i)
-        {
+    if (!isGPUOnly) {
+        for (int i = 0; i < 5; ++i) {
             memset(output_test, 0, width * height * sizeof(int));
             double startTime = CycleTimer::currentSeconds();
             mandelbrotSerial(x0, y0, x1, y1, width, height, 0, height, maxIterations, output_test);
@@ -182,8 +154,7 @@ int main(int argc, char **argv)
 
     double minRef = 0;
     double recordRef[10] = {0};
-    for (int i = 0; i < 10; ++i)
-    {
+    for (int i = 0; i < 10; ++i) {
         memset(output_thread, 0, width * height * sizeof(int));
         double startTime = CycleTimer::currentSeconds();
         mandelbrotThreadRef(x0, y0, x1, y1, width, height, maxIterations, output_test);
@@ -191,8 +162,7 @@ int main(int argc, char **argv)
         recordRef[i] = endTime - startTime;
     }
     std::sort(recordRef, recordRef + 10);
-    for (int i = 3; i < 7; ++i)
-    {
+    for (int i = 3; i < 7; ++i) {
         minRef += recordRef[i];
     }
     minRef /= 4;
@@ -206,8 +176,7 @@ int main(int argc, char **argv)
 
     double minThread = 0;
     double recordThread[10] = {0};
-    for (int i = 0; i < 10; ++i)
-    {
+    for (int i = 0; i < 10; ++i) {
         memset(output_thread, 0, width * height * sizeof(int));
         double startTime = CycleTimer::currentSeconds();
         mandelbrotThread(x0, y0, x1, y1, width, height, maxIterations, output_thread);
@@ -215,8 +184,7 @@ int main(int argc, char **argv)
         recordThread[i] = endTime - startTime;
     }
     std::sort(recordThread, recordThread + 10);
-    for (int i = 3; i < 7; ++i)
-    {
+    for (int i = 3; i < 7; ++i) {
         minThread += recordThread[i];
     }
     minThread /= 4;
@@ -224,8 +192,7 @@ int main(int argc, char **argv)
     printf("[mandelbrot thread]:\t\t[%.3f] ms\n", minThread * 1000);
     writePPMImage(output_thread, width, height, "mandelbrot-thread.ppm", maxIterations);
 
-    if (!verifyResult(output_test, output_thread, width, height))
-    {
+    if (!verifyResult(output_test, output_thread, width, height)) {
         printf("Error : Output from threads does not match test output\n");
 
         delete[] output_test;
