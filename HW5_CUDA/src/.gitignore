@@ -1,0 +1,5 @@
+kernel.cu
+*.swp
+mandelbrot
+*.ppm
+objs/
