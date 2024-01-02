@@ -2,12 +2,11 @@
 #include <stdlib.h>
 #include "bmpfuncs.h"
 
-//#include "bmpfuncs.h"
+// #include "bmpfuncs.h"
 typedef unsigned char uchar;
 
 void storeImage(float *imageOut, const char *filename, int rows, int cols,
-                const char *refFilename)
-{
+                const char *refFilename) {
 
    FILE *ifp, *ofp;
    unsigned char tmp;
@@ -20,8 +19,7 @@ void storeImage(float *imageOut, const char *filename, int rows, int cols,
    int height, width;
 
    ifp = fopen(refFilename, "rb");
-   if (ifp == NULL)
-   {
+   if (ifp == NULL) {
       perror(filename);
       exit(-1);
    }
@@ -36,8 +34,7 @@ void storeImage(float *imageOut, const char *filename, int rows, int cols,
    fseek(ifp, 0, SEEK_SET);
 
    buffer = (unsigned char *)malloc(offset);
-   if (buffer == NULL)
-   {
+   if (buffer == NULL) {
       perror("malloc");
       exit(-1);
    }
@@ -46,14 +43,12 @@ void storeImage(float *imageOut, const char *filename, int rows, int cols,
 
    printf("Writing output image to %s\n", filename);
    ofp = fopen(filename, "wb");
-   if (ofp == NULL)
-   {
+   if (ofp == NULL) {
       perror("opening output file");
       exit(-1);
    }
    bytes = fwrite(buffer, 1, offset, ofp);
-   if (bytes != offset)
-   {
+   if (bytes != offset) {
       printf("error writing header!\n");
       exit(-1);
    }
@@ -61,22 +56,18 @@ void storeImage(float *imageOut, const char *filename, int rows, int cols,
    // NOTE bmp formats store data in reverse raster order (see comment in
    // readImage function), so we need to flip it upside down here.
    int mod = width % 4;
-   if (mod != 0)
-   {
+   if (mod != 0) {
       mod = 4 - mod;
    }
    //   printf("mod = %d\n", mod);
-   for (i = height - 1; i >= 0; i--)
-   {
-      for (j = 0; j < width; j++)
-      {
+   for (i = height - 1; i >= 0; i--) {
+      for (j = 0; j < width; j++) {
          tmp = (unsigned char)imageOut[i * cols + j];
          fwrite(&tmp, sizeof(char), 1, ofp);
       }
       // In bmp format, rows must be a multiple of 4-bytes.
       // So if we're not at a multiple of 4, add junk padding.
-      for (j = 0; j < mod; j++)
-      {
+      for (j = 0; j < mod; j++) {
          fwrite(&tmp, sizeof(char), 1, ofp);
       }
    }
@@ -90,8 +81,7 @@ void storeImage(float *imageOut, const char *filename, int rows, int cols,
 /*
  * Read bmp image and convert to byte array. Also output the width and height
  */
-float *readImage(const char *filename, int *widthOut, int *heightOut)
-{
+float *readImage(const char *filename, int *widthOut, int *heightOut) {
 
    uchar *imageData;
 
@@ -102,8 +92,7 @@ float *readImage(const char *filename, int *widthOut, int *heightOut)
 
    printf("Reading input image from %s\n", filename);
    FILE *fp = fopen(filename, "rb");
-   if (fp == NULL)
-   {
+   if (fp == NULL) {
       perror(filename);
       exit(-1);
    }
@@ -122,8 +111,7 @@ float *readImage(const char *filename, int *widthOut, int *heightOut)
    *heightOut = height;
 
    imageData = (uchar *)malloc(width * height);
-   if (imageData == NULL)
-   {
+   if (imageData == NULL) {
       perror("malloc");
       exit(-1);
    }
@@ -132,8 +120,7 @@ float *readImage(const char *filename, int *widthOut, int *heightOut)
    fflush(NULL);
 
    int mod = width % 4;
-   if (mod != 0)
-   {
+   if (mod != 0) {
       mod = 4 - mod;
    }
 
@@ -145,30 +132,25 @@ float *readImage(const char *filename, int *widthOut, int *heightOut)
    // First we read the image in upside-down
 
    // Read in the actual image
-   for (i = 0; i < height; i++)
-   {
+   for (i = 0; i < height; i++) {
 
       // add actual data to the image
-      for (j = 0; j < width; j++)
-      {
+      for (j = 0; j < width; j++) {
          fread(&tmp, sizeof(char), 1, fp);
          imageData[i * width + j] = tmp;
       }
       // For the bmp format, each row has to be a multiple of 4,
       // so I need to read in the junk data and throw it away
-      for (j = 0; j < mod; j++)
-      {
+      for (j = 0; j < mod; j++) {
          fread(&tmp, sizeof(char), 1, fp);
       }
    }
 
    // Then we flip it over
    int flipRow;
-   for (i = 0; i < height / 2; i++)
-   {
+   for (i = 0; i < height / 2; i++) {
       flipRow = height - (i + 1);
-      for (j = 0; j < width; j++)
-      {
+      for (j = 0; j < width; j++) {
          tmp = imageData[i * width + j];
          imageData[i * width + j] = imageData[flipRow * width + j];
          imageData[flipRow * width + j] = tmp;
@@ -180,17 +162,14 @@ float *readImage(const char *filename, int *widthOut, int *heightOut)
    // Input image on the host
    float *floatImage = NULL;
    floatImage = (float *)malloc(sizeof(float) * width * height);
-   if (floatImage == NULL)
-   {
+   if (floatImage == NULL) {
       perror("malloc");
       exit(-1);
    }
 
    // Convert the BMP image to float (not required)
-   for (i = 0; i < height; i++)
-   {
-      for (j = 0; j < width; j++)
-      {
+   for (i = 0; i < height; i++) {
+      for (j = 0; j < width; j++) {
          floatImage[i * width + j] = (float)imageData[i * width + j];
       }
    }

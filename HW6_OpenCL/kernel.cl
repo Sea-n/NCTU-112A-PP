@@ -1,4 +1,3 @@
-__kernel void convolution() 
-{
-   
+__kernel void convolution() {
+
 }

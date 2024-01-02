@@ -5,10 +5,8 @@
 #include <stdlib.h>
 #include <CL/cl.h>
 
-#define CHECK(status, cmd)                           \
-    {                                                \
-        if (status != CL_SUCCESS)                    \
-        {                                            \
+#define CHECK(status, cmd) {                         \
+        if (status != CL_SUCCESS) {                  \
             printf("%s failed (%d)\n", cmd, status); \
             exit(-1);                                \
         }                                            \
